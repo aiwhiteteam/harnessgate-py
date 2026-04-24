@@ -25,6 +25,8 @@ class CreateSessionOpts:
     provider_config: dict[str, Any]
     sender: Sender
     user_id: str | None = None
+    agent_id: str | None = None
+    environment_id: str | None = None
     system_prompt: str | None = None
     extra: dict[str, Any] | None = None
 

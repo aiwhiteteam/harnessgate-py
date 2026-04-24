@@ -15,7 +15,16 @@ from harnessgate import Bridge, WebAdapter
 from harnessgate.providers import ClaudeProvider
 
 provider = ClaudeProvider(os.environ["ANTHROPIC_API_KEY"])
-bridge = Bridge(provider, default_agent_id="your-agent-id", default_environment_id="your-env-id")
+bridge = Bridge(provider)
+
+async def resolve_user(sender, platform, message):
+    return {
+        "user_id": sender.id,
+        "agent_id": "your-agent-id",
+        "environment_id": "your-env-id",
+    }
+
+bridge.set_user_resolver(resolve_user)
 
 bridge.add_platform(WebAdapter())
 
