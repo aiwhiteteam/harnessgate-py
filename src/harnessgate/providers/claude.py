@@ -57,12 +57,11 @@ class ClaudeProvider(Provider):
     # -- Session lifecycle ----------------------------------------------------
 
     async def create_session(self, opts: CreateSessionOpts) -> ProviderSession:
-        config = opts.provider_config
-        agent_id = config.get("agentId")
-        environment_id = config.get("environmentId")
+        agent_id = opts.agent_id
+        environment_id = opts.environment_id
 
         if not agent_id or not environment_id:
-            raise ValueError("Claude provider requires agentId and environmentId in provider config")
+            raise ValueError("Claude provider requires agent_id and environment_id from the user resolver")
 
         metadata: dict[str, str] = {}
         if opts.user_id:

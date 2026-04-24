@@ -121,14 +121,21 @@ Detailed setup instructions for each platform, including SaaS multi-tenant distr
 ```python
 from harnessgate.providers import ClaudeProvider
 
-provider = ClaudeProvider(
-    api_key="sk-ant-...",
-    default_agent_id="agent_01XXXX",
-    default_environment_id="env_01XXXX",
-)
+provider = ClaudeProvider(api_key="sk-ant-...")
 ```
 
 Connects to [Claude Managed Agents](https://docs.anthropic.com/en/docs/managed-agents/overview). Full support for streaming, tool confirmation, custom tools, extended thinking, and multi-agent threads.
+
+For Claude, `agent_id` and `environment_id` come from your `UserResolver`, not static provider config:
+
+```python
+async def resolve_user(sender, platform, message):
+    return {
+        "user_id": sender.id,
+        "agent_id": "agent_01XXXX",
+        "environment_id": "env_01XXXX",
+    }
+```
 
 ### Custom provider
 
@@ -164,7 +171,8 @@ sales_id = await bridge.connect("telegram", {"bot_token": SALES_TOKEN})
 # Route based on which bot received the message
 async def resolve_user(sender, platform, message):
     agent_id = await db.get_agent_for_bot(message.app_id)
-    return {"user_id": sender.id, "agent_id": agent_id, "environment_id": "env_01XXXX"}
+    environment_id = await db.get_environment_for_bot(message.app_id)
+    return {"user_id": sender.id, "agent_id": agent_id, "environment_id": environment_id}
 ```
 
 ### appId per platform

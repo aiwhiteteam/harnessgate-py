@@ -157,17 +157,13 @@ class Bridge:
 
         if not entry:
             try:
-                provider_config = {**self._config.provider}
-                if resolved_user and resolved_user.agent_id:
-                    provider_config["agentId"] = resolved_user.agent_id
-                if resolved_user and resolved_user.environment_id:
-                    provider_config["environmentId"] = resolved_user.environment_id
-
                 session = await self._provider.create_session(
                     CreateSessionOpts(
-                        provider_config=provider_config,
+                        provider_config={**self._config.provider},
                         sender=msg.sender,
                         user_id=resolved_user.user_id if resolved_user else None,
+                        agent_id=resolved_user.agent_id if resolved_user else None,
+                        environment_id=resolved_user.environment_id if resolved_user else None,
                         extra=resolved_user.metadata if resolved_user else None,
                     )
                 )
